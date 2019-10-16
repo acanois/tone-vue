@@ -1,6 +1,6 @@
 /* eslint-disable */
 <template>
-  <div class="hello">
+  <div class="transport">
     <h1>{{ msg }}</h1>
     <button class="transportControl" @click="startTransport()">
       <slot>Start</slot>
@@ -70,7 +70,7 @@ synth.chain(oscGain, adsr, filter, delay, reverb, Master)
 const notes = [
   'C2', 'G2', 'Eb2', 'Bb2',
   'C3', 'G3', 'Eb3', 'Bb3',
-  'C4', 'G4', 'Eb4', 'Bb4', 'Gb4',
+  'C4', 'G4', 'Eb4', 'Bb4',
   'C5', 'Eb5', 'G5'
 ]
 
@@ -120,18 +120,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  h3 {
+    margin: 40px 0 0;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  a {
+    color: #42b983;
+  }
 </style>
