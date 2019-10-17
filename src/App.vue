@@ -1,17 +1,20 @@
 <template>
   <div id="app">
-    <Transport msg="Press Start to Hear Synth Music"/>
+    <Transport/>
+    <Graphics/>
   </div>
 </template>
 
 <script>
 
 import Transport from './components/Transport.vue'
+import Graphics from './components/Graphics.vue'
 
 export default {
   name: 'app',
   components: {
-    Transport
+    Transport,
+    Graphics
   }
 }
 </script>

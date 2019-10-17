@@ -11,7 +11,9 @@
     "core-js": "^2.6.5",
     "three": "^0.109.0",
     "tone": "^13.8.25",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-gl": "^0.15.0",
+    "vue-threejs-composer": "^1.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.12.0",
