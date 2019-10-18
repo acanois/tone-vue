@@ -3,58 +3,61 @@
 </template>
 
 <script>
-import Vue from "vue";
-import * as THREE from "three";
-import * as VueGL from "vue-gl";
 
-// Imports vue-gl html tags
-Object.keys(VueGL).forEach(name => Vue.component(name, VueGL[name]));
+import * as THREE from "three"
+import OrbitControls from 'three-orbitcontrols'
 
-function initCamera () {
-  return new THREE.PerspectiveCamera(70, container.clientWidth / 480, 0.01, 100);
+function initCamera(container) {
+  return new THREE.PerspectiveCamera(70, container.clientWidth / 480, 0.01, 100)
 }
 
 function initScene () {
   return new THREE.Scene()
 }
 
-function initRenderer () {
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
+function initRenderer (container) {
+  const renderer = new THREE.WebGLRenderer({ antialias: false })
   renderer.setSize(container.clientWidth, 480)
 
   return renderer
 }
 
 function initMesh () {
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshNormalMaterial();
-  const mesh = new THREE.Mesh(geometry, material);
+  const geometry = new THREE.TetrahedronGeometry(1, 0, 1) 
+  const material = new THREE.MeshNormalMaterial()
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.scale.set(2, 2, 2)
 
   return mesh
 }
 
-function renderScene () {
+function initControls(camera, domElement) {
+  return new OrbitControls(camera, domElement)
+}
+
+function renderScene() {
   requestAnimationFrame(this.renderScene)
-  this.mesh.rotation.x += 0.01
-  this.mesh.rotation.z += 0.01
   this.renderer.render(this.scene, this.camera)
 }
 
 export default {
   name: "Graphics",
   mounted: function() {
-    this.camera = initCamera()
+    const container = document.getElementById('container')
+
+    this.camera = initCamera(container)
     this.scene = initScene()
     this.mesh = initMesh()
-    this.renderer = initRenderer()
-
-    this.camera.position.z = 10
-
+    this.renderer = initRenderer(container)
+    this.controls = initControls(this.camera, this.renderer.domElement)
+    
+    this.camera.position.set(0, 0, 10)
+    this.controls.update()
     this.scene.add(this.mesh)
 
-    document.getElementById('container').appendChild(this.renderer.domElement)
+    container.appendChild(this.renderer.domElement)
 
-    this.renderScene()
+    this.renderScene(this.controls)
   },
   methods: {
     initCamera,
@@ -63,7 +66,8 @@ export default {
     initMesh,
     renderScene
   }
-};
+}
+
 </script>
 
 <style>

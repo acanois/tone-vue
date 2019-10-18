@@ -1,7 +1,6 @@
 /* eslint-disable */
 <template>
   <div class="transport">
-    <h1>{{ msg }}</h1>
     <button class="transportControl" @click="startTransport()">
       <slot>Start</slot>
     </button>
@@ -21,7 +20,7 @@
 <script>
 
 import { Transport, AmplitudeEnvelope, Reverb, PingPongDelay, Filter, Gain, Oscillator, 
-         Master, Sequence } from 'tone'
+         Master, Sequence, Analyser } from 'tone'
 // Envelope
 const adsr = new AmplitudeEnvelope({
   'attack': 0.005,
@@ -61,11 +60,17 @@ const oscGain = new Gain({
   'gain': 0.75
 })
 
+// Analyzer
+const analyzer = new Analyser({
+  type: 'waveform',
+  smoothing: 0
+})
+
 //====================================================================================
 // Create oscillator
 const synth = new Oscillator('C2', 'triangle').start()
 
-synth.chain(oscGain, adsr, filter, delay, reverb, Master)
+synth.chain(oscGain, adsr, filter, delay, reverb, analyzer, Master)
 
 const notes = [
   'C2', 'G2', 'Eb2', 'Bb2',
@@ -79,6 +84,10 @@ const sequence = new Sequence((time, note) => {
   oscGain.gain.value = (Math.random() * 0.5) + 0.25
   synth.frequency.value = note
   adsr.triggerAttackRelease('16n')
+  
+  const ampData = analyzer.getValue()
+  const ampAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length
+  console.log(Math.abs(ampAvg(ampData)) * 100)
 }, notes, '8n')
 
 sequence.humanize = false
@@ -106,8 +115,11 @@ function changeCutoff() {
 
 export default {
   name: 'Transport',
-  props: {
-    msg: String
+  // props: {
+  //   msg: String
+  // },
+  mounted() {
+    
   },
   methods: {
     startTransport,
