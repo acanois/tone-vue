@@ -19,6 +19,7 @@
 
 <script>
 
+import { serverBus } from '../App.vue'
 import { Transport, AmplitudeEnvelope, Reverb, PingPongDelay, Filter, Gain, Oscillator, 
          Master, Sequence, Analyser } from 'tone'
 // Envelope
@@ -66,6 +67,31 @@ const analyzer = new Analyser({
   smoothing: 0
 })
 
+//============================================================================
+function startTransport() {
+  Transport.start()
+}
+
+function stopTransport() {
+  Transport.stop()
+}
+
+function changeWave() {
+  const waveSelector = document.getElementById('waveList')
+  synth.type = waveSelector.value.toLowerCase()
+}
+
+function changeCutoff() {
+  const cutoff = document.getElementById('cutoff')
+  filter.frequency.value = cutoff.value
+}
+
+let ampAvg = 0
+
+function sendAmplitude(value) {
+  this.$emit('avgAmptoApp', ampAvg)
+}
+
 //====================================================================================
 // Create oscillator
 const synth = new Oscillator('C2', 'triangle').start()
@@ -86,46 +112,34 @@ const sequence = new Sequence((time, note) => {
   adsr.triggerAttackRelease('16n')
   
   const ampData = analyzer.getValue()
-  const ampAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length
-  console.log(Math.abs(ampAvg(ampData)) * 100)
+  ampAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length
+  // console.log(Math.abs(ampAvg(ampData)) * 100)
+  sendAmplitude(Math.abs(ampAvg(ampData)) * 100)
 }, notes, '8n')
 
 sequence.humanize = false
 sequence.interval = '8n'
 sequence.start(0)
 
-//============================================================================
-function startTransport() {
-  Transport.start()
-}
-
-function stopTransport() {
-  Transport.stop()
-}
-
-function changeWave() {
-  const waveSelector = document.getElementById('waveList')
-  synth.type = waveSelector.value.toLowerCase()
-}
-
-function changeCutoff() {
-  const cutoff = document.getElementById('cutoff')
-  filter.frequency.value = cutoff.value
-}
-
 export default {
+  data () {
+    return {
+      ampValue: ampAvg
+    }
+  },
   name: 'Transport',
-  // props: {
-  //   msg: String
-  // },
+  props: {
+    avgAmp: Number
+  },
   mounted() {
-    
+    // Refactor everything and fill this in
   },
   methods: {
     startTransport,
     stopTransport,
     changeWave,
-    changeCutoff
+    changeCutoff,
+    sendAmplitude
   }
 }
 </script>

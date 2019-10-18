@@ -16,7 +16,7 @@ function initScene () {
 }
 
 function initRenderer (container) {
-  const renderer = new THREE.WebGLRenderer({ antialias: false })
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(container.clientWidth, 480)
 
   return renderer
